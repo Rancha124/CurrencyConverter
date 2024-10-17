@@ -51,7 +51,9 @@ const PaginationList = ({ displayRates }) => {
                     : item.inverseRate.toFixed(4)}{" "}
                   USD
                 </Text>
-                <Text style={styles.date}>{item.date.toLocaleString()}</Text>
+                <Text style={styles.date}>
+                  Data Last Retrieved : {item.date.toLocaleString()}
+                </Text>
               </View>
             )}
           />
