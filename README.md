@@ -49,9 +49,18 @@ A **React Native** application made with **Expo** that fetches and displays curr
 
 ## Screenshots
 
-![Home Screen](./assets/homescreen.jpg)
-![Home Screen With Search](./assets/homescreenwithsearch.jpg)
+### Home Screen
+
+<p>
+  <img src="./assets/homescreen.jpg" alt="HomeScreen" width="300"/>
+</p>
+
+### Home Screen With Search
+
+<p>
+  <img src="./assets/homescreenwithsearch.jpg" alt="Home Screen With Search" width="300"/>
+</p>
 
 ## Demo
 
-![App Demo](./assets/demo.mp4)
+[Watch the App Demo on YouTube](https://youtube.com/shorts/WlDfS-f4zdY?feature=share)
