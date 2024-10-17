@@ -27,43 +27,51 @@ const PaginationList = ({ displayRates }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={currentRates}
-        keyExtractor={(item) => item.currency}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.country}>
-              {item.country}, {item.currency}
+      {currentRates.length === 0 ? (
+        <View style={styles.noResultsContainer}>
+          <Text style={styles.noResultsText}>No results for your search.</Text>
+        </View>
+      ) : (
+        <>
+          <FlatList
+            data={currentRates}
+            keyExtractor={(item) => item.currency}
+            renderItem={({ item }) => (
+              <View style={styles.item}>
+                <Text style={styles.country}>
+                  {item.country}, {item.currency}
+                </Text>
+                <Text style={styles.currency}>
+                  1 USD : {item.rate.toFixed(4)} {item.currency}
+                </Text>
+                <Text style={styles.currency}>
+                  1 {item.currency} :{" "}
+                  {item.inverseRate < 0.0001
+                    ? item.inverseRate.toExponential(4)
+                    : item.inverseRate.toFixed(4)}{" "}
+                  USD
+                </Text>
+                <Text style={styles.date}>{item.date.toLocaleString()}</Text>
+              </View>
+            )}
+          />
+          <View style={styles.pagination}>
+            <Button
+              title="Previous"
+              onPress={handlePreviousPage}
+              disabled={currentPage === 0}
+            />
+            <Text>
+              Page {currentPage + 1} of {totalPages}
             </Text>
-            <Text style={styles.currency}>
-              1 USD : {item.rate.toFixed(4)} {item.currency}
-            </Text>
-            <Text style={styles.currency}>
-              1 {item.currency} :{" "}
-              {item.inverseRate < 0.0001
-                ? item.inverseRate.toExponential(4)
-                : item.inverseRate.toFixed(4)}{" "}
-              USD
-            </Text>
-            <Text style={styles.date}>{item.date.toLocaleString()}</Text>
+            <Button
+              title="Next"
+              onPress={handleNextPage}
+              disabled={currentPage >= totalPages - 1}
+            />
           </View>
-        )}
-      />
-      <View style={styles.pagination}>
-        <Button
-          title="Previous"
-          onPress={handlePreviousPage}
-          disabled={currentPage === 0}
-        />
-        <Text>
-          Page {currentPage + 1} of {totalPages}
-        </Text>
-        <Button
-          title="Next"
-          onPress={handleNextPage}
-          disabled={currentPage >= totalPages - 1}
-        />
-      </View>
+        </>
+      )}
     </View>
   );
 };
@@ -94,6 +102,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 16,
+  },
+  noResultsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noResultsText: {
+    fontSize: 18,
+    color: "#333",
   },
 });
 
