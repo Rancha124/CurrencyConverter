@@ -1,5 +1,11 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, Modal } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  TextInput,
+} from "react-native";
 import useStore from "../stores";
 import { fetchCurrencyRates } from "../apis/fetchCurrencyRates";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,6 +17,9 @@ const CurrencyList = () => {
   const setLoading = useStore((state) => state.setLoading);
   const setRates = useStore((state) => state.setRates);
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQueryRates, setSearchQueryRates] = useState([]);
+
   // Function to format API response into a list of objects
   const formatRates = (data) => {
     return Object.keys(data).map((key) => ({
@@ -18,6 +27,7 @@ const CurrencyList = () => {
       currency: data[key].code,
       rate: data[key].rate,
       date: new Date(data[key].date),
+      inverseRate: data[key].inverseRate,
     }));
   };
 
@@ -55,6 +65,19 @@ const CurrencyList = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (searchQuery) {
+      const filtered = rates.filter(
+        (rate) =>
+          rate.currency.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          rate.country.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setSearchQueryRates(filtered);
+    } else {
+      setSearchQueryRates(rates);
+    }
+  }, [searchQuery, rates]);
+
   // Sort rates by conversion rate
   // Get the minimum and maximum rates
   const minRateValue = Math.min(...rates.map((rate) => rate.rate));
@@ -70,19 +93,25 @@ const CurrencyList = () => {
   );
 
   // Combine the lowest, highest, and the rest of the rates
-  const displayRates = [...lowestRates, ...highestRates, ...filteredRates];
+  const displayRates = searchQuery
+    ? searchQueryRates
+    : [...lowestRates, ...highestRates, ...filteredRates];
 
   return (
     <View style={styles.container}>
-      <PaginationList displayRates={displayRates} />
-      <Modal transparent={true} animationType="fade" visible={loading}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.loadingText}>Getting latest info...</Text>
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
+      {loading && (
+        <View style={styles.loadingIndicatorContainer}>
+          <ActivityIndicator size="small" color="#0000ff" />
+          <Text style={styles.loadingText}>Getting latest info...</Text>
         </View>
-      </Modal>
+      )}
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Search by country or currency"
+        value={searchQuery}
+        onChangeText={(text) => setSearchQuery(text)}
+      />
+      <PaginationList displayRates={displayRates} />
     </View>
   );
 };
@@ -90,6 +119,14 @@ const CurrencyList = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  searchInput: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+    margin: 10,
+    paddingLeft: 10,
   },
   item: {
     borderBottomWidth: 1,
@@ -106,31 +143,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#666",
   },
-  loadingContainer: {
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  loadingText: {
-    fontSize: 16,
-    color: "#000",
-    marginBottom: 5,
-  },
-  modalContainer: {
-    flex: 1,
+  loadingIndicatorContainer: {
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    padding: 20,
-    borderRadius: 10,
-    alignItems: "center",
+    paddingVertical: 10,
   },
   loadingText: {
-    marginBottom: 10,
+    marginLeft: 8,
     fontSize: 16,
-    fontWeight: "bold",
   },
 });
 

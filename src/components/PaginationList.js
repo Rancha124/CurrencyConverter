@@ -38,6 +38,13 @@ const PaginationList = ({ displayRates }) => {
             <Text style={styles.currency}>
               1 USD : {item.rate.toFixed(4)} {item.currency}
             </Text>
+            <Text style={styles.currency}>
+              1 {item.currency} :{" "}
+              {item.inverseRate < 0.0001
+                ? item.inverseRate.toExponential(4)
+                : item.inverseRate.toFixed(4)}{" "}
+              USD
+            </Text>
             <Text style={styles.date}>{item.date.toLocaleString()}</Text>
           </View>
         )}
