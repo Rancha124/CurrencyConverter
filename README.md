@@ -63,4 +63,4 @@ A **React Native** application made with **Expo** that fetches and displays curr
 
 ## Demo
 
-[Watch the App Demo on YouTube](https://youtube.com/shorts/WlDfS-f4zdY?feature=share)
+[Watch the App Demo on YouTube](https://youtu.be/dP9xLAE7TM0)
